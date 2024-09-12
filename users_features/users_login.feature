@@ -1,49 +1,42 @@
-#language: pt
-#encoding: utf-8
+Feature: Login de Usuário
 
-Funcionalidade: Login de Usuário
+  Scenario: Login com credenciais corretas
+    Given que o usuário está na página de login
+    When o usuário preenche o campo de E-mail com um E-mail válido
+    And o usuário preenche o campo de Senha com a senha correta
+    And o usuário clica no botão de login
+    Then o usuário deve ser redirecionado para a área logada
 
-  Como um usuário não autenticado
-  Eu quero acessar o sistema
-  Para que eu possa utilizar as funcionalidades disponíveis após o login
+  Scenario: Campos obrigatórios em branco
+    Given que o usuário está na página de login
+    When o usuário deixa um ou mais campos obrigatórios em branco
+    And o usuário clica no botão de login
+    Then o sistema deve exibir uma mensagem pedindo o preenchimento dos campos obrigatórios
+    And o login não deve ser realizado
 
-  Cenário: Login com credenciais corretas
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando preencher o campo de E-mail com um E-mail correto e que já está cadastrado
-    E preencher o campo de Senha com a senha correta
-    E pressionar o botão Login
-    Então o sistema deve redirecionar o Usuário para a Área Logada (/dashboard)
+  Scenario: E-mail incorreto
+    Given que o usuário está na página de login
+    When o usuário preenche o campo de E-mail com um E-mail não cadastrado
+    And o usuário preenche o campo de Senha corretamente
+    And o usuário clica no botão de login
+    Then o sistema deve exibir uma mensagem informando que o E-mail não foi encontrado
+    And o login não deve ser realizado
 
-  Cenário: Campos obrigatórios em branco
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando não preencher (deixar em branco) um ou mais campos
-    E pressionar o botão Login
-    Então o sistema deve exibir uma mensagem exigindo o preenchimento dos campos vazios
-    E não efetuar o login
+  Scenario: Senha incorreta
+    Given que o usuário está na página de login
+    When o usuário preenche o campo de E-mail com um E-mail válido
+    And o usuário preenche o campo de Senha com uma senha incorreta
+    And o usuário clica no botão de login
+    Then o sistema deve exibir uma mensagem informando que a senha está incorreta
+    And o login não deve ser realizado
 
-  Cenário: E-mail incorreto
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando preencher o campo de E-mail com um E-mail Incorreto/Não cadastrado
-    E preencher o campo de Senha corretamente
-    E pressionar o botão Login
-    Então o sistema deve exibir uma mensagem informando que o E-mail inserido não foi encontrado
-    E não efetuar o login
+  Scenario: Link para página de cadastro
+    Given que o usuário está na página de login
+    When o usuário clica no link "Criar uma conta"
+    Then o usuário deve ser redirecionado para a página de cadastro
 
-  Cenário: Senha incorreta
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando preencher o campo de E-mail com um E-mail correto e cadastrado
-    E preencher o campo de Senha com a Senha incorreta
-    E pressionar o botão Login
-    Então o sistema deve exibir uma mensagem de Senha incorreta
-    E não efetuar o login
-
-  Cenário: Link para página de Cadastro
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando clicar no botão/link de "Não possuo uma conta"
-    Então o sistema deve redirecionar o Usuário para a página de Cadastro de Usuário (/sign-up)
-
-  Cenário: Problemas de conexão ou erro interno
-    Dado que o Usuário esteja na página de Login (/sign-in)
-    Quando o sistema apresentar algum problema de conexão com o Backend ou outro problema não previsto
-    E o Usuário clicar no botão de Login
-    Então o sistema deve retornar um erro 500 - Internal Server Error, com uma mensagem apropriada ao usuário
+  Scenario: Problemas de conexão ou erro interno
+    Given que o usuário está na página de login
+    When ocorre um problema de conexão ou erro no sistema
+    And o usuário clica no botão de login
+    Then o sistema deve exibir uma mensagem de erro apropriada
